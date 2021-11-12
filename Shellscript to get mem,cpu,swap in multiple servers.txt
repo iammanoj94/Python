@@ -1,0 +1,28 @@
+# vi /opt/scripts/cpu-memory-swap.sh
+
+#!/bin/bash
+echo "-------------------------------------------"
+echo "Server_Name   CPU(%)   Memory(%)   Swap(%)"
+echo "-------------------------------------------"
+for server in `more /opt/scripts/server-list.txt`
+do
+scpu=$(ssh $server cat /proc/stat | awk '/cpu/{printf("%.2f%\n"), ($2+$4)*100/($2+$4+$5)}' |  awk '{print $0}' | head -1)
+smem=$(ssh $server free | awk '/Mem/{printf("%.2f%"), $3/$2*100}')
+sswap=$(ssh $server free | awk '/Swap/{printf("%.2f%"), $3/$2*100}')
+echo "$server   $scpu   $smem   $sswap"
+done | column -t
+echo "-------------------------------------------"
+
+# chmod +x /opt/scripts/cpu-memory-swap.sh
+
+
+Output looks like:
+
+# sh cpu-mem-black.sh
+
+---------------------------------------------------
+Server_Name             CPU(%) Memory(%)   Swap(%)
+---------------------------------------------------
+CentOS7.2daygeek.com    0.04%  12.77%      0.00%
+Ubuntu18.2daygeek.com   0.29%  28.43%      0.00%
+---------------------------------------------------
