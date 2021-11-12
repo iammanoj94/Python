@@ -6,3 +6,5 @@ portion = int(random.randint(30,100)/level)
 print(portion)
 health = (health + portion)
 print(health)
+
+Print("new output")
